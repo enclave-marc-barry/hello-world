@@ -28,16 +28,16 @@ jobs:
         echo "ENCLAVE_ID=$ENCLAVE_ID" >> $GITHUB_ENV
         echo "ENCLAVE_ADDR=$ENCLAVE_ADDR" >> $GITHUB_ENV
         
+    - name: Revoke Enrolled System at End
+      uses: webiny/action-post-run@2.0.1
+      with:
+        run: curl --oauth2-bearer ${{ secrets.ENCLAVE_API_KEY }} -X DELETE https://api.enclave.io/org/ae7e35a160104a9f831ff5b9422b59e0/systems/${{ env.ENCLAVE_ID }}
+      
     - name: Stop Enclave at End
       uses: webiny/action-post-run@2.0.1
       with:
         run: enclave stop
         
-    - name: Revoke Enrolled System at End
-      uses: webiny/action-post-run@2.0.1
-      with:
-        run: curl --oauth2-bearer ${{ secrets.ENCLAVE_API_KEY }} -X DELETE https://api.enclave.io/org/ae7e35a160104a9f831ff5b9422b59e0/systems/$ENCLAVE_ID
-      
     - name: Configure DNS
       run: |
         echo "DNS=$ENCLAVE_ADDR" | sudo tee -a /etc/systemd/resolved.conf
