@@ -23,6 +23,12 @@ jobs:
       run: |
         enclave start -w
         enclave status
+
+    - name: Stop at end of run
+      uses: webiny/action-post-run@2.0.1
+      with:
+        run: |
+          enclave stop
       
     - name: Configure DNS
       run: |
