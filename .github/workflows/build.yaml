@@ -19,6 +19,12 @@ jobs:
         sudo apt-get install enclave
         sudo enclave enrol ${{ secrets.ENCLAVE_ENROLMENT_KEY }}       
 
+    - name: Configure DNS
+      run: |
+        VIRT_ADDR=$(enclave status | grep "Local address" | cut -d ' ' -f 10)
+        echo "DNS=$VIRT_ADDR" | sudo tee -a /etc/systemd/resolved.conf
+        sudo systemctl restart systemd-resolved
+
     - name: Print Status
       run: |
         enclave start -w
