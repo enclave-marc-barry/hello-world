@@ -23,10 +23,14 @@ jobs:
       run: |
         enclave start -w
         enclave status
+        sleep 5
+        
         ENCLAVE_ID=$(enclave status | grep "Local identity" | cut -d ' ' -f 3)
         ENCLAVE_ADDR=$(enclave status | grep "Local address" | cut -d ' ' -f 10)
         echo "ENCLAVE_ID=$ENCLAVE_ID" >> $GITHUB_ENV
         echo "ENCLAVE_ADDR=$ENCLAVE_ADDR" >> $GITHUB_ENV
+
+        
         
     - name: Revoke Enrolled System at End
       uses: webiny/action-post-run@2.0.1
@@ -44,8 +48,6 @@ jobs:
         sudo systemctl restart systemd-resolved    
 
         resolvectl status
-
-        sleep 5
       
     - name: Print Logs
       run: |
