@@ -25,8 +25,8 @@ jobs:
         enclave status
         ENCLAVE_ID=$(enclave status | grep "Local identity" | cut -d ' ' -f 3)
         ENCLAVE_ADDR=$(enclave status | grep "Local address" | cut -d ' ' -f 10)
-        echo "::set-env name=ENCLAVE_ID::$ENCLAVE_ID"
-        echo "::set-env name=ENCLAVE_ADDR::$ENCLAVE_ADDR"
+        echo "ENCLAVE_ID=$ENCLAVE_ID" >> $GITHUB_ENV
+        echo "ENCLAVE_ADDR=$ENCLAVE_ADDR" >> $GITHUB_ENV
         
     - name: Stop Enclave at End
       uses: webiny/action-post-run@2.0.1
