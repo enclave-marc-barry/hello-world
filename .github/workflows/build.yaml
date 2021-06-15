@@ -1,0 +1,25 @@
+name: Connect Experiment
+
+on: push
+
+jobs:
+  build:
+
+    name: Build Something
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Enrol Enclave
+      run: |
+        curl -fsSL https://packages.enclave.io/apt/enclave.unstable.gpg | sudo apt-key add - 
+        curl -fsSL https://packages.enclave.io/apt/enclave.unstable.list | sudo tee /etc/apt/sources.list.d/enclave.unstable.list
+        sudo apt-get update
+        sudo apt-get install enclave
+        sudo enclave enrol ${{ secrets.ENCLAVE_ENROLMENT_KEY }}       
+
+    - name: Print Status
+      run: |
+        enclave start -w
+        enclave status
