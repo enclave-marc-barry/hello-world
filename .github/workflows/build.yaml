@@ -23,7 +23,6 @@ jobs:
       run: |
         enclave start -w
         enclave status
-        sleep 5
       
     - name: Configure DNS
       run: |
@@ -32,8 +31,13 @@ jobs:
         echo "DNS=$VIRT_ADDR" | sudo tee -a /etc/systemd/resolved.conf
         sudo systemctl restart systemd-resolved    
         cat /etc/resolv.conf
-                
+
         resolvectl status
+
+        sleep 5
+        
+        resolvectl status
+        
 
     - name: Query On-Premise Server
       run: curl http://on-prem-build-server.enclave
