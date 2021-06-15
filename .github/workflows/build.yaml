@@ -32,6 +32,8 @@ jobs:
         echo "DNS=$VIRT_ADDR" | sudo tee -a /etc/systemd/resolved.conf
         sudo systemctl restart systemd-resolved    
         cat /etc/resolv.conf
+                
+        resolvectl status
 
     - name: Query On-Premise Server
       run: curl http://on-prem-build-server.enclave
