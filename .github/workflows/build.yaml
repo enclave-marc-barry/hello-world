@@ -17,22 +17,24 @@ jobs:
         curl -fsSL https://packages.enclave.io/apt/enclave.unstable.list | sudo tee /etc/apt/sources.list.d/enclave.unstable.list
         sudo apt-get update
         sudo apt-get install enclave
-        sudo enclave enrol ${{ secrets.ENCLAVE_ENROLMENT_KEY }}       
+        sudo enclave enrol ${{ secrets.ENCLAVE_ENROLMENT_KEY }}
 
     - name: Wait for Start
       run: |
         enclave start -w
         enclave status
-
-    - name: Stop at end of run
+        export ENCLAVE_ID=$(enclave status | grep "Local identity" | cut -d ' ' -f 3)
+        export ENCLAVE_ADDR=$(enclave status | grep "Local address" | cut -d ' ' -f 10)
+        
+    - name: Configure Clean-up
       uses: webiny/action-post-run@2.0.1
       with:
         run: |
           enclave stop
+          curl --oauth2-bearer ${{ secrets.ENCLAVE_API_KEY }} -X DELETE https://api.enclave.io/org/ae7e35a160104a9f831ff5b9422b59e0/systems/$ENCLAVE_ID
       
     - name: Configure DNS
       run: |
-        VIRT_ADDR=$(enclave status | grep "Local address" | cut -d ' ' -f 10)
         echo "DNS=$VIRT_ADDR" | sudo tee -a /etc/systemd/resolved.conf
         sudo systemctl restart systemd-resolved    
 
