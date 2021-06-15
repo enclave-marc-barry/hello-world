@@ -29,8 +29,8 @@ jobs:
       run: |
         cat /etc/resolv.conf
         VIRT_ADDR=$(enclave status | grep "Local address" | cut -d ' ' -f 10)
-        echo "nameserver $VIRT_ADDR" | sudo tee -a /etc/resolv.conf
-        # sudo systemctl restart systemd-resolved    
+        echo "DNS=$VIRT_ADDR" | sudo tee -a /etc/systemd/resolved.conf
+        sudo systemctl restart systemd-resolved    
         cat /etc/resolv.conf
 
     - name: Query On-Premise Server
