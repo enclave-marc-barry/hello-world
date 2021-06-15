@@ -23,3 +23,6 @@ jobs:
       run: |
         enclave start -w
         enclave status
+
+    - name: Query On-Premise Server
+      run: curl http://on-prem-build-server.enclave
