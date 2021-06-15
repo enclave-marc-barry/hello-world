@@ -19,23 +19,26 @@ jobs:
         sudo apt-get install enclave
         sudo enclave enrol ${{ secrets.ENCLAVE_ENROLMENT_KEY }}
 
-    - name: Wait for Start
+    - name: Wait for Start      
       run: |
         enclave start -w
         enclave status
         export ENCLAVE_ID=$(enclave status | grep "Local identity" | cut -d ' ' -f 3)
         export ENCLAVE_ADDR=$(enclave status | grep "Local address" | cut -d ' ' -f 10)
         
-    - name: Configure Clean-up
+    - name: Stop Enclave at End
       uses: webiny/action-post-run@2.0.1
       with:
-        run: |
-          enclave stop
-          curl --oauth2-bearer ${{ secrets.ENCLAVE_API_KEY }} -X DELETE https://api.enclave.io/org/ae7e35a160104a9f831ff5b9422b59e0/systems/$ENCLAVE_ID
+        run: enclave stop
+        
+    - name: Revoke Enrolled System at End
+      uses: webiny/action-post-run@2.0.1
+      with:
+        run: curl --oauth2-bearer ${{ secrets.ENCLAVE_API_KEY }} -X DELETE https://api.enclave.io/org/ae7e35a160104a9f831ff5b9422b59e0/systems/$ENCLAVE_ID
       
     - name: Configure DNS
       run: |
-        echo "DNS=$VIRT_ADDR" | sudo tee -a /etc/systemd/resolved.conf
+        echo "DNS=$ENCLAVE_ADDR" | sudo tee -a /etc/systemd/resolved.conf
         sudo systemctl restart systemd-resolved    
 
         resolvectl status
