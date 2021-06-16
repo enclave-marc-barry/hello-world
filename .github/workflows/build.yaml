@@ -5,7 +5,7 @@ on: push
 jobs:
   build:
 
-    name: Build Something
+    name: Enclave Connectivity Test
 
     runs-on: ubuntu-latest
 
