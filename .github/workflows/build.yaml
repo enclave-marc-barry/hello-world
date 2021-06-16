@@ -28,3 +28,29 @@ jobs:
 
     - name: Query On-Premise Server
       run: curl http://test-server-for-gh-setup.enclave
+
+  build2:
+
+    name: Concurrent not a problem
+
+    runs-on: ubuntu-latest
+
+    steps:
+    
+    - name: Setup Enclave
+      uses: enclave-alistair/enclave-setup-action@main
+      with:
+        channel: unstable
+        # This enrolment key tags the runner with the 'gh-runner' tag.
+        enrolment-key: ${{ secrets.ENCLAVE_ENROLMENT_KEY }}
+
+        # We need the orgId and API key in order to revoke the system at 
+        # the end of the run, so we don't use up your available systems.
+        orgId: a09a8d4dd4ea4c12a33a51e3effac9fa
+        apiKey: ${{ secrets.ENCLAVE_API_KEY }}
+      
+    - name: Wait for Connection to OnPrem
+      run: enclave waitfor test-server-for-gh-setup.enclave
+
+    - name: Query On-Premise Server
+      run: curl http://test-server-for-gh-setup.enclave
