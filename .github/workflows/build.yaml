@@ -23,8 +23,8 @@ jobs:
         orgId: a09a8d4dd4ea4c12a33a51e3effac9fa
         apiKey: ${{ secrets.ENCLAVE_API_KEY }}
       
-    - name: Wait for Connection to OnPrem
+    - name: Wait for Connection to your on-prem server
       run: enclave waitfor on-prem-server.enclave
 
-    - name: Query On-Premise Server
+    - name: Query on-prem server
       run: curl on-prem-server.enclave
