@@ -10,48 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-    - name: Enrol Enclave
-      run: |
-        curl -fsSL https://packages.enclave.io/apt/enclave.unstable.gpg | sudo apt-key add - 
-        curl -fsSL https://packages.enclave.io/apt/enclave.unstable.list | sudo tee /etc/apt/sources.list.d/enclave.unstable.list
-        sudo apt-get update
-        sudo apt-get install enclave
-        sudo enclave enrol ${{ secrets.ENCLAVE_ENROLMENT_KEY }}
-
-    - name: Wait for Start      
-      run: |
-        enclave start -w
-        enclave status
-        sleep 5
-        
-        ENCLAVE_ID=$(enclave status | grep "Local identity" | cut -d ' ' -f 3)
-        ENCLAVE_ADDR=$(enclave status | grep "Local address" | cut -d ' ' -f 10)
-        echo "ENCLAVE_ID=$ENCLAVE_ID" >> $GITHUB_ENV
-        echo "ENCLAVE_ADDR=$ENCLAVE_ADDR" >> $GITHUB_ENV
-
-        
-        
-    - name: Revoke Enrolled System at End
-      uses: webiny/action-post-run@2.0.1
+    
+    - name: Setup Enclave
+      uses: enclave-alistair/enclave-setup-action@v1
       with:
-        run: curl --oauth2-bearer ${{ secrets.ENCLAVE_API_KEY }} -X DELETE https://api.enclave.io/org/ae7e35a160104a9f831ff5b9422b59e0/systems/${{ env.ENCLAVE_ID }}
+        channel: unstable
+        enrolment-key: ${{ secrets.ENCLAVE_ENROLMENT_KEY }}
+        orgId: a09a8d4dd4ea4c12a33a51e3effac9fa
+        apiKey: ${{ secrets.ENCLAVE_API_KEY }}
       
-    - name: Stop Enclave at End
-      uses: webiny/action-post-run@2.0.1
-      with:
-        run: enclave stop
-        
-    - name: Configure DNS
-      run: |
-        echo "DNS=$ENCLAVE_ADDR" | sudo tee -a /etc/systemd/resolved.conf
-        sudo systemctl restart systemd-resolved    
-
-        resolvectl status
-      
-    - name: Print Logs
-      run: |
-        cat /var/log/enclave/*
+    - name: Wait for Connection to OnPrem
+      run: enclave waitfor test-server-for-gh-setup.enclave
 
     - name: Query On-Premise Server
-      run: curl http://on-prem-build-server.enclave
+      run: curl http://test-server-for-gh-setup.enclave
