@@ -14,7 +14,6 @@ jobs:
     - name: Setup Enclave
       uses: enclave-alistair/enclave-setup-action@main
       with:
-        channel: unstable
         # This enrolment key tags the runner with the 'gh-runner' tag, 
         # so connectivity happens automatically.
         enrolment-key: ${{ secrets.ENCLAVE_ENROLMENT_KEY }}
