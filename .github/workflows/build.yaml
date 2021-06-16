@@ -12,7 +12,7 @@ jobs:
     steps:
     
     - name: Setup Enclave
-      uses: enclave-alistair/enclave-setup-action
+      uses: enclave-alistair/enclave-setup-action@main
       with:
         channel: unstable
         enrolment-key: ${{ secrets.ENCLAVE_ENROLMENT_KEY }}
