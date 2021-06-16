@@ -42,7 +42,9 @@ steps:
 
 ```
 
-The enclave setup in this test:
+You can check out the Actions results for a run [here](https://github.com/enclave-alistair/gh-actions-enclave/runs/2841198674).
+
+The enclave setup in this test, done from the [Enclave Portal](https://portal.enclave.io):
 
 - An on-prem web-server running in my network, running enclave, and tagged with `gh-test-server`.  DNS configured to give it the name `on-prem-server.enclave`.
 - An automatic enrolment key (`GH Actions Test Runner`), that auto-tags anything enrolled with that key with `gh-runner`.
