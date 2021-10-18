@@ -12,7 +12,7 @@ jobs:
     steps:
 
     - uses: actions/checkout@v2
-    
+
     # Setup dotnet
     - uses: actions/setup-dotnet@v1
       with:
@@ -33,6 +33,8 @@ jobs:
         # the end of the run, so we don't use up your available systems.
         orgId: a09a8d4dd4ea4c12a33a51e3effac9fa
         apiKey: ${{ secrets.ENCLAVE_API_KEY }}
+
+    - run: cat /etc/enclave/pid/Universe.profile.pid
 
     - name: Wait for Connection to your on-prem server
       run: enclave waitfor sign-server.enclave
