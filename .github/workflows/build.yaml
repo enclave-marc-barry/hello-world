@@ -35,6 +35,7 @@ jobs:
         apiKey: ${{ secrets.ENCLAVE_API_KEY }}
 
     - run: enclave status
+      if: always()
 
     - name: Wait for Connection to your on-prem server
       run: enclave waitfor sign-server.enclave
