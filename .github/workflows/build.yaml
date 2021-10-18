@@ -40,7 +40,7 @@ jobs:
     - run: mkdir artifacts
 
     - name: Send our signing file to our on-prem signing server
-      run: curl -F file=@bin/Release/publish/HelloWorld.exe -o artifacts/HelloWorld-signed.exe sign-server.enclave/sign
+      run: curl -F file=@bin/Release/net5.0/win-x64/publish/HelloWorld.exe -o artifacts/HelloWorld-signed.exe sign-server.enclave/sign
 
     - uses: actions/upload-artifact@v2
       with:
