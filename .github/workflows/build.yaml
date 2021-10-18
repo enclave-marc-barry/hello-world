@@ -5,12 +5,21 @@ on: push
 jobs:
   build:
 
-    name: Enclave Connectivity Test
+    name: Build with Remote Signing
 
     runs-on: ubuntu-latest
 
     steps:
+
+    # Setup dotnet
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.0'
+        
+    - name: Build
+      run: dotnet publish -c Release
     
+    # Setup enclave ready for signing
     - name: Setup Enclave
       uses: enclave-alistair/enclave-setup-action@main
       with:
@@ -18,13 +27,19 @@ jobs:
         # so connectivity happens automatically.
         enrolment-key: ${{ secrets.ENCLAVE_ENROLMENT_KEY }}
 
-        # We need the orgId and API key in order to revoke the system at 
+        # We need the orgId and API key in order to revoke the system at
         # the end of the run, so we don't use up your available systems.
         orgId: a09a8d4dd4ea4c12a33a51e3effac9fa
         apiKey: ${{ secrets.ENCLAVE_API_KEY }}
-      
-    - name: Wait for Connection to your on-prem server
-      run: enclave waitfor on-prem-server.enclave
 
-    - name: Query on-prem server
-      run: curl on-prem-server.enclave
+    - name: Wait for Connection to your on-prem server
+      run: enclave waitfor sign-server.enclave
+
+    - run: mkdir artifacts
+
+    - name: Send our signing file to our on-prem signing server
+      run: curl -F file=bin/Release/publish/HelloWorld.exe -o artifacts/HelloWorld-signed.exe sign-server.enclave/sign
+
+    - uses: actions/upload-artifact@v2
+      with:
+        path: artifacts/HelloWorld-signed.exe
