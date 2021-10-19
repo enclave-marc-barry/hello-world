@@ -23,7 +23,7 @@ jobs:
     
     # Setup enclave ready for signing
     - name: Setup Enclave
-      uses: enclave-alistair/enclave-setup-action@main
+      uses: enclave-networks/enclave-setup-action@main
       with:
         # This enrolment key tags the runner with the 'gh-runner' tag, 
         # so connectivity happens automatically.
@@ -31,16 +31,16 @@ jobs:
 
         # We need the orgId and API key in order to revoke the system at
         # the end of the run, so we don't use up your available systems.
-        orgId: a09a8d4dd4ea4c12a33a51e3effac9fa
+        orgId: 17a458d4610346b3affdee27ed49da5c
         apiKey: ${{ secrets.ENCLAVE_API_KEY }}
 
     - name: Wait for Connection to your on-prem server
-      run: enclave waitfor sign-server.enclave
+      run: enclave waitfor sign-server.internal
 
     - run: mkdir artifacts
 
     - name: Send our signing file to our on-prem signing server
-      run: curl -F file=@bin/Release/net5.0/win-x64/publish/HelloWorld.exe -o artifacts/HelloWorld-signed.exe sign-server.enclave/sign
+      run: curl -F file=@bin/Release/net5.0/win-x64/publish/HelloWorld.exe -o artifacts/HelloWorld-signed.exe http://sign-server.internal/sign
 
     - uses: actions/upload-artifact@v2
       with:
