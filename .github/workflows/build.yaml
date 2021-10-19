@@ -23,7 +23,7 @@ jobs:
     
     # Setup enclave ready for signing
     - name: Setup Enclave
-      uses: enclave-networks/enclave-setup-action@main
+      uses: enclave-networks/setup-enclave@v1
       with:
         # This enrolment key tags the runner with the 'gh-runner' tag, 
         # so connectivity happens automatically.
